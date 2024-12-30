@@ -153,7 +153,7 @@
             // buttonReplay
             // 
             this.buttonReplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonReplay.Location = new System.Drawing.Point(13, 31);
+            this.buttonReplay.Location = new System.Drawing.Point(12, 30);
             this.buttonReplay.Name = "buttonReplay";
             this.buttonReplay.Size = new System.Drawing.Size(76, 29);
             this.buttonReplay.TabIndex = 1;
