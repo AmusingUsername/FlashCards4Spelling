@@ -40,6 +40,8 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripButtonModifyWords = new System.Windows.Forms.ToolStripButton();
             this.toolStripButtonReport = new System.Windows.Forms.ToolStripButton();
+            this.buttonReplay = new System.Windows.Forms.Button();
+            this.labelFlashCardWord = new System.Windows.Forms.Label();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,7 +68,7 @@
             // toolStripLabelLabelVoice
             // 
             this.toolStripLabelLabelVoice.Name = "toolStripLabelLabelVoice";
-            this.toolStripLabelLabelVoice.Size = new System.Drawing.Size(48, 24);
+            this.toolStripLabelLabelVoice.Size = new System.Drawing.Size(48, 28);
             this.toolStripLabelLabelVoice.Text = "Voice:";
             // 
             // toolStripDropDownButtonVoices
@@ -84,12 +86,12 @@
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 31);
             // 
             // toolStripLabelLabelRate
             // 
             this.toolStripLabelLabelRate.Name = "toolStripLabelLabelRate";
-            this.toolStripLabelLabelRate.Size = new System.Drawing.Size(54, 24);
+            this.toolStripLabelLabelRate.Size = new System.Drawing.Size(54, 28);
             this.toolStripLabelLabelRate.Text = "Speed:";
             // 
             // toolStripButtonSpeedSlower
@@ -98,7 +100,7 @@
             this.toolStripButtonSpeedSlower.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSpeedSlower.Image")));
             this.toolStripButtonSpeedSlower.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSpeedSlower.Name = "toolStripButtonSpeedSlower";
-            this.toolStripButtonSpeedSlower.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButtonSpeedSlower.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonSpeedSlower.Text = "-";
             this.toolStripButtonSpeedSlower.ToolTipText = "Decrease rate of speech";
             this.toolStripButtonSpeedSlower.Click += new System.EventHandler(this.toolStripButtonSpeedSlower_Click);
@@ -107,7 +109,7 @@
             // 
             this.toolStripLabelSpeedRate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.toolStripLabelSpeedRate.Name = "toolStripLabelSpeedRate";
-            this.toolStripLabelSpeedRate.Size = new System.Drawing.Size(18, 24);
+            this.toolStripLabelSpeedRate.Size = new System.Drawing.Size(18, 28);
             this.toolStripLabelSpeedRate.Text = "0";
             // 
             // toolStripButtonSpeedFaster
@@ -116,7 +118,7 @@
             this.toolStripButtonSpeedFaster.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSpeedFaster.Image")));
             this.toolStripButtonSpeedFaster.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSpeedFaster.Name = "toolStripButtonSpeedFaster";
-            this.toolStripButtonSpeedFaster.Size = new System.Drawing.Size(29, 24);
+            this.toolStripButtonSpeedFaster.Size = new System.Drawing.Size(29, 28);
             this.toolStripButtonSpeedFaster.Text = "+";
             this.toolStripButtonSpeedFaster.ToolTipText = "Increase rate of speech";
             this.toolStripButtonSpeedFaster.Click += new System.EventHandler(this.toolStripButtonSpeedFaster_Click);
@@ -124,7 +126,7 @@
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 27);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 31);
             // 
             // toolStripButtonModifyWords
             // 
@@ -132,7 +134,7 @@
             this.toolStripButtonModifyWords.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonModifyWords.Image")));
             this.toolStripButtonModifyWords.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonModifyWords.Name = "toolStripButtonModifyWords";
-            this.toolStripButtonModifyWords.Size = new System.Drawing.Size(106, 24);
+            this.toolStripButtonModifyWords.Size = new System.Drawing.Size(106, 28);
             this.toolStripButtonModifyWords.Text = "Modify Words";
             this.toolStripButtonModifyWords.ToolTipText = "Modify words for flash cards";
             this.toolStripButtonModifyWords.Click += new System.EventHandler(this.toolStripButtonModifyWords_Click);
@@ -143,17 +145,41 @@
             this.toolStripButtonReport.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonReport.Image")));
             this.toolStripButtonReport.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonReport.Name = "toolStripButtonReport";
-            this.toolStripButtonReport.Size = new System.Drawing.Size(58, 24);
+            this.toolStripButtonReport.Size = new System.Drawing.Size(58, 28);
             this.toolStripButtonReport.Text = "Report";
             this.toolStripButtonReport.ToolTipText = "Check progress";
             this.toolStripButtonReport.Click += new System.EventHandler(this.toolStripButtonReport_Click);
+            // 
+            // buttonReplay
+            // 
+            this.buttonReplay.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonReplay.Location = new System.Drawing.Point(13, 31);
+            this.buttonReplay.Name = "buttonReplay";
+            this.buttonReplay.Size = new System.Drawing.Size(76, 29);
+            this.buttonReplay.TabIndex = 1;
+            this.buttonReplay.Text = "Replay Word";
+            this.buttonReplay.UseVisualStyleBackColor = true;
+            this.buttonReplay.Click += new System.EventHandler(this.buttonReplay_Click);
+            // 
+            // labelFlashCardWord
+            // 
+            this.labelFlashCardWord.Font = new System.Drawing.Font("Microsoft Sans Serif", 42F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFlashCardWord.Location = new System.Drawing.Point(10, 27);
+            this.labelFlashCardWord.Name = "labelFlashCardWord";
+            this.labelFlashCardWord.Size = new System.Drawing.Size(778, 414);
+            this.labelFlashCardWord.TabIndex = 2;
+            this.labelFlashCardWord.Text = "Crikey";
+            this.labelFlashCardWord.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelFlashCardWord.TextChanged += new System.EventHandler(this.labelFlashCardWord_TextChanged);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonReplay);
             this.Controls.Add(this.toolStripMain);
+            this.Controls.Add(this.labelFlashCardWord);
             this.Name = "FormMain";
             this.Text = "Flash Cards for Spelling";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
@@ -177,6 +203,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton toolStripButtonModifyWords;
         private System.Windows.Forms.ToolStripButton toolStripButtonReport;
+        private System.Windows.Forms.Button buttonReplay;
+        private System.Windows.Forms.Label labelFlashCardWord;
     }
 }
 

@@ -71,6 +71,11 @@ namespace FlashCards4Spelling
             return voices.Keys.ToArray();
         }
 
+        public void Speak(string prompt)
+        {
+            this.synth.Speak(prompt);
+        }
+
         private string cleanVoiceName(string voice)
         {
             return voice.Replace("Microsoft ", string.Empty).Replace(" Desktop", string.Empty);

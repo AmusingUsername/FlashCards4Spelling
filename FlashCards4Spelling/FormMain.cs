@@ -165,5 +165,15 @@ namespace FlashCards4Spelling
         {
             //open reporting dialog
         }
+
+        private void labelFlashCardWord_TextChanged(object sender, EventArgs e)
+        {
+            tts.Speak(((Label)sender).Text);
+        }
+
+        private void buttonReplay_Click(object sender, EventArgs e)
+        {
+            tts.Speak(labelFlashCardWord.Text);
+        }
     }
 }
