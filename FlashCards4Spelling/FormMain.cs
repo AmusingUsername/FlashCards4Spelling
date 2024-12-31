@@ -175,5 +175,10 @@ namespace FlashCards4Spelling
         {
             tts.Speak(labelFlashCardWord.Text);
         }
+
+        private void textBoxWordEntry_Enter(object sender, EventArgs e)
+        {
+
+        }
     }
 }
