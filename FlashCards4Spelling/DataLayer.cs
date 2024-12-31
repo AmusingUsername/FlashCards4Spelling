@@ -43,5 +43,95 @@ namespace FlashCards4Spelling
             db.Tables.Add(tableResult);
 
         }
+
+        public void addWord(string word, string category = "")
+        {
+            //insert
+            throw new NotImplementedException();
+        }
+
+        public void updateWordSpelling(string word, string wordNewSpelling)
+        {
+            //check for word existing, update spelling or delete/insert new word
+            throw new NotImplementedException();
+        }
+
+        public void updateWordCategory(string word, string category)
+        {
+            throw new NotImplementedException();
+        }
+        public void updateWordMastered(string word, bool isMastered = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void updateWordActive(string word, bool isActive)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void deleteWord(string word)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string[] getWords(bool isActive = true, bool isMastered = false)
+        {
+            throw new NotImplementedException();
+            List<string> words = new List<string>();
+            return words.ToArray();
+        }
+
+        public string[] getWordsByCategory(string category, bool isMastered = false, bool isActive = true)
+        {
+            throw new NotImplementedException();
+            List<string> words = new List<string>();
+            return words.ToArray();
+        }
+
+        public int getResultsAttempts(string word)
+        {
+            int attempts = 0;
+            attempts = getResults(word, DateTime.MinValue, DateTime.MaxValue);
+            return attempts;
+        }
+
+        public int getResultsCorrect(string word)
+        {
+            int correct = getResults(word, DateTime.MinValue, DateTime.MaxValue, true);
+            return correct;
+        }
+
+        public int getResultsAttemptsRange(string word, DateTime start, DateTime end)
+        {
+            int attempts = getResults(word, start, end, true);
+            return attempts;
+        }
+
+        public int getResultsAttemptsSince(string word, DateTime start)
+        {
+            int attempts = getResults(word, start, DateTime.MaxValue);
+            return attempts;
+        }
+
+        public int getResultsCorrectRange(string word, DateTime start, DateTime end)
+        {
+            int correct = getResults(word, start, end, true);
+            return correct;
+        }
+
+        public int getResultsCorrectSince(string word, DateTime start)
+        {
+            int correct = getResults(word, start, DateTime.MaxValue, true);
+            return correct;
+        }
+
+        private int getResults(string word, DateTime start, DateTime end, bool onlyCorrect = false)
+        {
+            throw new NotImplementedException();
+            int result = 0;
+            //select based on parameters to get a count of rows
+            return result;
+        }
     }
 }
