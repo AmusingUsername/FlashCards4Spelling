@@ -15,6 +15,7 @@ namespace FlashCards4Spelling
     public partial class FormMain : Form
     {
         TTSInterface tts;
+        DataLayer data;
 
         public FormMain()
         {
@@ -22,6 +23,7 @@ namespace FlashCards4Spelling
             tts = new TTSInterface();
             initializeToolBarComponents();
             configsReadApply();
+            data = new DataLayer();
         }
         private void configsReadApply()
         {
@@ -158,7 +160,15 @@ namespace FlashCards4Spelling
 
         private void toolStripButtonModifyWords_Click(object sender, EventArgs e)
         {
-            //open configuration dialog
+            FormDataMaintenance fdm = new FormDataMaintenance(data);
+            fdm.FormClosed += returnFromMaintenance;
+            fdm.Show();
+            this.Hide();
+        }
+
+        private void returnFromMaintenance(object sender, FormClosedEventArgs e)
+        {
+            this.Show();
         }
 
         private void toolStripButtonReport_Click(object sender, EventArgs e)

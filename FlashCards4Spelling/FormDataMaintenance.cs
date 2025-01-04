@@ -10,14 +10,31 @@ using System.Windows.Forms;
 
 namespace FlashCards4Spelling
 {
-    public partial class FormDataMaintenance : Form
+    internal partial class FormDataMaintenance : Form
     {
         private string ui_save = "Save";
         private string ui_add = "Add";
+        private DataLayer data;
+        private List<string> wordList;
 
         public FormDataMaintenance()
         {
             InitializeComponent();
+            data = new DataLayer();
+            finalizeConstruction();
+        }
+
+        public FormDataMaintenance(DataLayer inData)
+        {
+            InitializeComponent();
+            this.data = inData;
+            finalizeConstruction();
+        }
+
+        private void finalizeConstruction()
+        {
+            wordList = new List<string>();
+            this.data.DataLayerChanged += refreshWordsList;
         }
 
         private void checkBoxWordActive_CheckedChanged(object sender, EventArgs e)
@@ -64,6 +81,38 @@ namespace FlashCards4Spelling
         private void addRecord(string word)
         {
             //add to datastructure, refresh textBoxWords
+            if (data != null)
+            {
+                data.addWord(word);
+            }
+        }
+
+        private void textBoxNewWord_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                buttonAdd_Click(sender, e);
+            }
+        }
+
+        private void listBoxWords_ControlAdded(object sender, ControlEventArgs e)
+        {
+            wordList = data.getWordsAll().ToList<string>();
+            listBoxWords.DataSource = wordList;
+        }
+
+        private void refreshWordsList(string word = "")
+        {
+            //there has to be a better way, need to fix how data is refreshed...
+            //intention is to obfuscate the underlying data structure with DataLayer, maybe look at underlying
+            //data structure for the listbox or how it's bound and have DataLayer extend that?
+            wordList = data.getWordsAll().ToList<string>();
+            listBoxWords.DataSource = wordList;
+
+            if (word != "")
+            {
+                listBoxWords.SelectedIndex = listBoxWords.FindStringExact(word);
+            }
         }
     }
 }

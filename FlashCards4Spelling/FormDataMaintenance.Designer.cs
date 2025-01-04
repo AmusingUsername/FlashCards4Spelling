@@ -32,16 +32,16 @@
             this.textBoxNewWord = new System.Windows.Forms.TextBox();
             this.buttonAdd = new System.Windows.Forms.Button();
             this.groupBoxWordProperties = new System.Windows.Forms.GroupBox();
-            this.labelWordCategory = new System.Windows.Forms.Label();
-            this.textBoxWordCategory = new System.Windows.Forms.TextBox();
             this.checkBoxWordActive = new System.Windows.Forms.CheckBox();
+            this.textBoxWordCategory = new System.Windows.Forms.TextBox();
+            this.labelWordCategory = new System.Windows.Forms.Label();
             this.groupBoxWordResults = new System.Windows.Forms.GroupBox();
-            this.checkBoxWordResultMastered = new System.Windows.Forms.CheckBox();
-            this.labelWordResultsAttempts = new System.Windows.Forms.Label();
-            this.labelWordResultsCorrect = new System.Windows.Forms.Label();
-            this.labelWordResultsAttemptsValue = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.labelWordResultsCorrectValue = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.labelWordResultsAttemptsValue = new System.Windows.Forms.Label();
+            this.labelWordResultsCorrect = new System.Windows.Forms.Label();
+            this.labelWordResultsAttempts = new System.Windows.Forms.Label();
+            this.checkBoxWordResultMastered = new System.Windows.Forms.CheckBox();
             this.buttonWordEdit = new System.Windows.Forms.Button();
             this.groupBoxWordProperties.SuspendLayout();
             this.groupBoxWordResults.SuspendLayout();
@@ -55,6 +55,7 @@
             this.listBoxWords.Name = "listBoxWords";
             this.listBoxWords.Size = new System.Drawing.Size(242, 660);
             this.listBoxWords.TabIndex = 0;
+            this.listBoxWords.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.listBoxWords_ControlAdded);
             // 
             // textBoxNewWord
             // 
@@ -62,6 +63,7 @@
             this.textBoxNewWord.Name = "textBoxNewWord";
             this.textBoxNewWord.Size = new System.Drawing.Size(183, 22);
             this.textBoxNewWord.TabIndex = 1;
+            this.textBoxNewWord.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBoxNewWord_KeyUp);
             // 
             // buttonAdd
             // 
@@ -84,22 +86,6 @@
             this.groupBoxWordProperties.TabIndex = 3;
             this.groupBoxWordProperties.TabStop = false;
             // 
-            // labelWordCategory
-            // 
-            this.labelWordCategory.AutoSize = true;
-            this.labelWordCategory.Location = new System.Drawing.Point(6, 18);
-            this.labelWordCategory.Name = "labelWordCategory";
-            this.labelWordCategory.Size = new System.Drawing.Size(65, 16);
-            this.labelWordCategory.TabIndex = 0;
-            this.labelWordCategory.Text = "Category:";
-            // 
-            // textBoxWordCategory
-            // 
-            this.textBoxWordCategory.Location = new System.Drawing.Point(9, 38);
-            this.textBoxWordCategory.Name = "textBoxWordCategory";
-            this.textBoxWordCategory.Size = new System.Drawing.Size(242, 22);
-            this.textBoxWordCategory.TabIndex = 1;
-            // 
             // checkBoxWordActive
             // 
             this.checkBoxWordActive.AutoSize = true;
@@ -115,6 +101,22 @@
             this.checkBoxWordActive.UseVisualStyleBackColor = true;
             this.checkBoxWordActive.CheckedChanged += new System.EventHandler(this.checkBoxWordActive_CheckedChanged);
             // 
+            // textBoxWordCategory
+            // 
+            this.textBoxWordCategory.Location = new System.Drawing.Point(9, 38);
+            this.textBoxWordCategory.Name = "textBoxWordCategory";
+            this.textBoxWordCategory.Size = new System.Drawing.Size(242, 22);
+            this.textBoxWordCategory.TabIndex = 1;
+            // 
+            // labelWordCategory
+            // 
+            this.labelWordCategory.AutoSize = true;
+            this.labelWordCategory.Location = new System.Drawing.Point(6, 18);
+            this.labelWordCategory.Name = "labelWordCategory";
+            this.labelWordCategory.Size = new System.Drawing.Size(65, 16);
+            this.labelWordCategory.TabIndex = 0;
+            this.labelWordCategory.Text = "Category:";
+            // 
             // groupBoxWordResults
             // 
             this.groupBoxWordResults.Controls.Add(this.labelWordResultsCorrectValue);
@@ -129,40 +131,14 @@
             this.groupBoxWordResults.TabIndex = 4;
             this.groupBoxWordResults.TabStop = false;
             // 
-            // checkBoxWordResultMastered
+            // labelWordResultsCorrectValue
             // 
-            this.checkBoxWordResultMastered.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBoxWordResultMastered.Location = new System.Drawing.Point(8, 69);
-            this.checkBoxWordResultMastered.Name = "checkBoxWordResultMastered";
-            this.checkBoxWordResultMastered.Size = new System.Drawing.Size(104, 24);
-            this.checkBoxWordResultMastered.TabIndex = 0;
-            this.checkBoxWordResultMastered.Text = "Mastered:";
-            this.checkBoxWordResultMastered.UseVisualStyleBackColor = true;
-            // 
-            // labelWordResultsAttempts
-            // 
-            this.labelWordResultsAttempts.Location = new System.Drawing.Point(10, 18);
-            this.labelWordResultsAttempts.Name = "labelWordResultsAttempts";
-            this.labelWordResultsAttempts.Size = new System.Drawing.Size(62, 24);
-            this.labelWordResultsAttempts.TabIndex = 1;
-            this.labelWordResultsAttempts.Text = "Attempts:";
-            // 
-            // labelWordResultsCorrect
-            // 
-            this.labelWordResultsCorrect.Location = new System.Drawing.Point(10, 42);
-            this.labelWordResultsCorrect.Name = "labelWordResultsCorrect";
-            this.labelWordResultsCorrect.Size = new System.Drawing.Size(62, 24);
-            this.labelWordResultsCorrect.TabIndex = 2;
-            this.labelWordResultsCorrect.Text = "Correct:";
-            // 
-            // labelWordResultsAttemptsValue
-            // 
-            this.labelWordResultsAttemptsValue.Location = new System.Drawing.Point(148, 18);
-            this.labelWordResultsAttemptsValue.Name = "labelWordResultsAttemptsValue";
-            this.labelWordResultsAttemptsValue.Size = new System.Drawing.Size(100, 23);
-            this.labelWordResultsAttemptsValue.TabIndex = 3;
-            this.labelWordResultsAttemptsValue.Text = "0";
-            this.labelWordResultsAttemptsValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelWordResultsCorrectValue.Location = new System.Drawing.Point(198, 43);
+            this.labelWordResultsCorrectValue.Name = "labelWordResultsCorrectValue";
+            this.labelWordResultsCorrectValue.Size = new System.Drawing.Size(50, 23);
+            this.labelWordResultsCorrectValue.TabIndex = 5;
+            this.labelWordResultsCorrectValue.Text = "0";
+            this.labelWordResultsCorrectValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label2
             // 
@@ -173,14 +149,40 @@
             this.label2.Text = "0%";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // labelWordResultsCorrectValue
+            // labelWordResultsAttemptsValue
             // 
-            this.labelWordResultsCorrectValue.Location = new System.Drawing.Point(198, 43);
-            this.labelWordResultsCorrectValue.Name = "labelWordResultsCorrectValue";
-            this.labelWordResultsCorrectValue.Size = new System.Drawing.Size(50, 23);
-            this.labelWordResultsCorrectValue.TabIndex = 5;
-            this.labelWordResultsCorrectValue.Text = "0";
-            this.labelWordResultsCorrectValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelWordResultsAttemptsValue.Location = new System.Drawing.Point(148, 18);
+            this.labelWordResultsAttemptsValue.Name = "labelWordResultsAttemptsValue";
+            this.labelWordResultsAttemptsValue.Size = new System.Drawing.Size(100, 23);
+            this.labelWordResultsAttemptsValue.TabIndex = 3;
+            this.labelWordResultsAttemptsValue.Text = "0";
+            this.labelWordResultsAttemptsValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // labelWordResultsCorrect
+            // 
+            this.labelWordResultsCorrect.Location = new System.Drawing.Point(10, 42);
+            this.labelWordResultsCorrect.Name = "labelWordResultsCorrect";
+            this.labelWordResultsCorrect.Size = new System.Drawing.Size(62, 24);
+            this.labelWordResultsCorrect.TabIndex = 2;
+            this.labelWordResultsCorrect.Text = "Correct:";
+            // 
+            // labelWordResultsAttempts
+            // 
+            this.labelWordResultsAttempts.Location = new System.Drawing.Point(10, 18);
+            this.labelWordResultsAttempts.Name = "labelWordResultsAttempts";
+            this.labelWordResultsAttempts.Size = new System.Drawing.Size(62, 24);
+            this.labelWordResultsAttempts.TabIndex = 1;
+            this.labelWordResultsAttempts.Text = "Attempts:";
+            // 
+            // checkBoxWordResultMastered
+            // 
+            this.checkBoxWordResultMastered.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxWordResultMastered.Location = new System.Drawing.Point(8, 69);
+            this.checkBoxWordResultMastered.Name = "checkBoxWordResultMastered";
+            this.checkBoxWordResultMastered.Size = new System.Drawing.Size(104, 24);
+            this.checkBoxWordResultMastered.TabIndex = 0;
+            this.checkBoxWordResultMastered.Text = "Mastered:";
+            this.checkBoxWordResultMastered.UseVisualStyleBackColor = true;
             // 
             // buttonWordEdit
             // 
