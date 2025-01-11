@@ -43,6 +43,7 @@
             this.buttonReplay = new System.Windows.Forms.Button();
             this.labelFlashCardWord = new System.Windows.Forms.Label();
             this.textBoxWordEntry = new System.Windows.Forms.TextBox();
+            this.buttonNextWord = new System.Windows.Forms.Button();
             this.toolStripMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -62,7 +63,7 @@
             this.toolStripButtonReport});
             this.toolStripMain.Location = new System.Drawing.Point(0, 0);
             this.toolStripMain.Name = "toolStripMain";
-            this.toolStripMain.Size = new System.Drawing.Size(800, 31);
+            this.toolStripMain.Size = new System.Drawing.Size(800, 27);
             this.toolStripMain.TabIndex = 0;
             this.toolStripMain.Text = "toolStrip1";
             // 
@@ -79,7 +80,7 @@
             this.toolStripDropDownButtonVoices.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDropDownButtonVoices.Image")));
             this.toolStripDropDownButtonVoices.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripDropDownButtonVoices.Name = "toolStripDropDownButtonVoices";
-            this.toolStripDropDownButtonVoices.Size = new System.Drawing.Size(118, 28);
+            this.toolStripDropDownButtonVoices.Size = new System.Drawing.Size(118, 24);
             this.toolStripDropDownButtonVoices.Text = "Tir-far-thóinn";
             this.toolStripDropDownButtonVoices.ToolTipText = "Select a voice";
             this.toolStripDropDownButtonVoices.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStripDropDownButtonVoices_DropDownItemClicked);
@@ -165,6 +166,7 @@
             // labelFlashCardWord
             // 
             this.labelFlashCardWord.Font = new System.Drawing.Font("Microsoft Sans Serif", 42F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFlashCardWord.ForeColor = System.Drawing.Color.Red;
             this.labelFlashCardWord.Location = new System.Drawing.Point(10, 192);
             this.labelFlashCardWord.Name = "labelFlashCardWord";
             this.labelFlashCardWord.Size = new System.Drawing.Size(778, 87);
@@ -176,19 +178,32 @@
             // textBoxWordEntry
             // 
             this.textBoxWordEntry.Font = new System.Drawing.Font("Microsoft Sans Serif", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxWordEntry.ForeColor = System.Drawing.SystemColors.ControlText;
             this.textBoxWordEntry.Location = new System.Drawing.Point(10, 192);
             this.textBoxWordEntry.Name = "textBoxWordEntry";
             this.textBoxWordEntry.Size = new System.Drawing.Size(778, 87);
             this.textBoxWordEntry.TabIndex = 3;
             this.textBoxWordEntry.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBoxWordEntry.Enter += new System.EventHandler(this.textBoxWordEntry_Enter);
-            this.textBoxWordEntry.Leave += new System.EventHandler(this.textBoxWordEntry_Enter);
+            this.textBoxWordEntry.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxWordEntry_KeyPress);
+            // 
+            // buttonNextWord
+            // 
+            this.buttonNextWord.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonNextWord.Location = new System.Drawing.Point(339, 285);
+            this.buttonNextWord.Name = "buttonNextWord";
+            this.buttonNextWord.Size = new System.Drawing.Size(122, 32);
+            this.buttonNextWord.TabIndex = 4;
+            this.buttonNextWord.Text = "Next Word";
+            this.buttonNextWord.UseVisualStyleBackColor = true;
+            this.buttonNextWord.Visible = false;
+            this.buttonNextWord.Click += new System.EventHandler(this.buttonNextWord_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonNextWord);
             this.Controls.Add(this.textBoxWordEntry);
             this.Controls.Add(this.buttonReplay);
             this.Controls.Add(this.toolStripMain);
@@ -219,6 +234,7 @@
         private System.Windows.Forms.Button buttonReplay;
         private System.Windows.Forms.Label labelFlashCardWord;
         private System.Windows.Forms.TextBox textBoxWordEntry;
+        private System.Windows.Forms.Button buttonNextWord;
     }
 }
 

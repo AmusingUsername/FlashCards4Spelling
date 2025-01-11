@@ -101,10 +101,15 @@ namespace FlashCards4Spelling
             listBoxWords.DataSource = wordList;
         }
 
+        /// <summary>
+        /// handles event/notification from DataLayer that data changed, refresh the list
+        /// </summary>
+        /// <param name="word"></param>
         private void refreshWordsList(string word = "")
         {
             //there has to be a better way, need to fix how data is refreshed...
-            //intention is to obfuscate the underlying data structure with DataLayer, maybe look at underlying
+            //intention is to obfuscate the underlying data structure with DataLayer without
+            //also managing the local copy of the list... maybe look at underlying
             //data structure for the listbox or how it's bound and have DataLayer extend that?
             wordList = data.getWordsAll().ToList<string>();
             listBoxWords.DataSource = wordList;

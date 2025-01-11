@@ -52,6 +52,7 @@ namespace FlashCards4Spelling
             tableResult.Columns.Add(colResultTimestamp);
             DataColumn colResultCorrect = new DataColumn(col_results_correct, typeof(bool));
             colResultCorrect.DefaultValue = false;
+            tableResult.Columns.Add(colResultCorrect);
             tableResult.PrimaryKey = new DataColumn[] { tableResult.Columns[col_words_word], tableResult.Columns[col_results_time] };
             ds.Tables.Add(tableResult);
 
@@ -188,6 +189,15 @@ namespace FlashCards4Spelling
             result = ds.Tables[tbl_results].Select(filter).Length;
 
             return result;
+        }
+
+        internal void setResponseResult(string word, bool responseWasCorrect)
+        {
+            DataRow dr = ds.Tables[tbl_results].NewRow();
+            dr[col_words_word] = word;
+            dr[col_results_correct] = responseWasCorrect;
+            dr[col_results_time] = DateTime.UtcNow;
+            ds.Tables[tbl_results].Rows.Add(dr);
         }
 
         public delegate void DataLayerChangedHandler(string word);

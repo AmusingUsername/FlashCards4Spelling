@@ -5,10 +5,14 @@ using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
+using System.Security.Cryptography;
 using System.Speech.Synthesis;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
+using FlashCards4Spelling.Properties;
 
 namespace FlashCards4Spelling
 {
@@ -16,17 +20,46 @@ namespace FlashCards4Spelling
     {
         TTSInterface tts;
         DataLayer data;
+        List<string> words = (new string[] { "forgot", "Constantinople", "malcontent", "espresso", "tollgate" }).ToList<string>();
+        List<string> responsesCorrect;
+        List<string> responsesIncorrect;
+        bool respondToCorrectWithSpeech = true;
+        bool respondToIncorrectWithSpeech = true;
+        string responseSoundCorrect = "C:\\Windows\\Media\\tada.wav"; //default value, this can be changed via settings file
+        string responseSoundIncorrect = "C:\\Windows\\Media\\ringout.wav"; //default value, this can be changed via settings file
+        string defaultResponseCorrect = "Correct!";
+        string defaultResponseIncorrect = "That was wrong!";
+        SoundPlayer playerCorrect;
+        SoundPlayer playerIncorrect;
 
         public FormMain()
         {
             InitializeComponent();
             tts = new TTSInterface();
             initializeToolBarComponents();
+            responsesCorrect = new List<string>();
+            responsesIncorrect = new List<string>();
             configsReadApply();
             data = new DataLayer();
+            if (!respondToCorrectWithSpeech)
+            {
+                
+                playerCorrect = new SoundPlayer();
+                playerCorrect.SoundLocation = responseSoundCorrect;
+                playerIncorrect.LoadAsync();
+            }
+            if (!respondToIncorrectWithSpeech)
+            {
+                playerIncorrect = new SoundPlayer();
+                playerIncorrect.SoundLocation = responseSoundIncorrect;
+                playerIncorrect.LoadAsync();
+            }
+
+            nextCard();
         }
         private void configsReadApply()
         {
+            bool bValue = false;
             try
             {
                 var appSettings = ConfigurationManager.AppSettings;
@@ -51,6 +84,25 @@ namespace FlashCards4Spelling
                                 toolStripLabelSpeedRate.Text = rate.ToString();
                                 tts.SetRate(rate);
                                 break;
+                            case "responsesCorrect":
+                                responsesCorrect.AddRange(appSettings[key].Split(',')); //ConfigManager saves multi-values as a csv
+                                break;
+                            case "responsesIncorrect":
+                                responsesIncorrect.AddRange(appSettings[key].Split(',')); //ConfigManager saves multi-values as a csv
+                                break;
+                            case "respondToCorrectWithSpeech":
+                                if(bool.TryParse(appSettings[key], out bValue))
+                                {
+                                    respondToCorrectWithSpeech = bValue;
+                                }
+                                break;
+                            case "respondToIncorrectWithSpeech":
+                                if (bool.TryParse(appSettings[key], out bValue))
+                                {
+                                    respondToIncorrectWithSpeech = bValue;
+                                }
+                                break;
+
                         }
                     }
                 }
@@ -67,8 +119,12 @@ namespace FlashCards4Spelling
             {
                 var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 KeyValueConfigurationCollection settings = configFile.AppSettings.Settings;
-                configSettingSetVoice(settings);
-                configSettingSetRate(settings);
+                configSettingSet_voice(settings);
+                configSettingSet_rate(settings);
+                configSettingSet_respondToCorrectWithSpeech(settings);
+                configSettingSet_respondToIncorrectWithSpeech(settings);
+                configSettingSetGivenMultipleValues(settings, "responsesCorrect", responsesCorrect);
+                configSettingSetGivenMultipleValues(settings, "responsesIncorrect", responsesIncorrect);
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
             }
@@ -78,10 +134,8 @@ namespace FlashCards4Spelling
             }
         }
 
-        private void configSettingSetVoice(KeyValueConfigurationCollection settings)
+        private void configSettingSetGivenValue(KeyValueConfigurationCollection settings, string key, string value)
         {
-            string key = "voice";
-            string value = tts.GetCurrentVoice(true);
             if (settings[key] == null)
             {
                 settings.Add(key, value);
@@ -91,19 +145,34 @@ namespace FlashCards4Spelling
                 settings[key].Value = value;
             }
         }
-        private void configSettingSetRate(KeyValueConfigurationCollection settings)
+
+        private void configSettingSetGivenMultipleValues(KeyValueConfigurationCollection settings, string key, List<string> values)
         {
-            string key = "rate";
-            string value = toolStripLabelSpeedRate.Text;
-            if (settings[key] == null)
+            foreach (string value in values)
             {
                 settings.Add(key, value);
             }
-            else
-            {
-                settings[key].Value = value;
-            }
         }
+
+        private void configSettingSet_voice(KeyValueConfigurationCollection settings)
+        {
+            configSettingSetGivenValue(settings, "voice", tts.GetCurrentVoice(true));
+        }
+        private void configSettingSet_rate(KeyValueConfigurationCollection settings)
+        {
+            configSettingSetGivenValue(settings, "rate", toolStripLabelSpeedRate.Text);
+        }
+
+        private void configSettingSet_respondToIncorrectWithSpeech(KeyValueConfigurationCollection settings)
+        {
+            configSettingSetGivenValue(settings, "respondToIncorrectWithSpeech", respondToIncorrectWithSpeech.ToString());
+        }
+
+        private void configSettingSet_respondToCorrectWithSpeech(KeyValueConfigurationCollection settings)
+        {
+            configSettingSetGivenValue(settings, "respondToCorrectWithSpeech", respondToCorrectWithSpeech.ToString());
+        }
+
         private void initializeToolBarComponents()
         {
             foreach (string voice in tts.GetVoices())
@@ -186,9 +255,113 @@ namespace FlashCards4Spelling
             tts.Speak(labelFlashCardWord.Text);
         }
 
-        private void textBoxWordEntry_Enter(object sender, EventArgs e)
+        private void textBoxWordEntry_KeyPress(object sender, KeyPressEventArgs e)
         {
-
+            if (e.KeyChar == (char)Keys.Enter || e.KeyChar == (char)Keys.Tab)
+            {
+                if (textBoxWordEntry.Text.Equals(labelFlashCardWord.Text, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    handleCorrect();
+                }
+                else
+                {
+                    handleIncorrect();
+                }
+            }
         }
+
+        private void handleCorrect()
+        {
+            if (respondToCorrectWithSpeech)
+            {
+                string response = defaultResponseCorrect;
+                if (responsesCorrect.Count > 0)
+                {
+                    response = responsesCorrect[new Random().Next(0, responsesCorrect.Count -1)];
+                }
+                tts.Speak(response);
+            }
+            else
+            {
+                //play sound wav this.responseSoundCorrect
+                if (playerCorrect != null)
+                {
+                    playerCorrect.Play();
+                }
+            }
+
+//disabled until we are pulling the list from the datalayer rather than test data above, will cause foreign key violation otherwise
+            //data.setResponseResult(labelFlashCardWord.Text, true);
+            nextCard();
+        }
+
+        private void handleIncorrect()
+        {
+            if(respondToIncorrectWithSpeech)
+            {
+                string response = defaultResponseIncorrect;
+                if (responsesIncorrect.Count > 0)
+                {
+                    response = responsesIncorrect[new Random().Next(0, responsesCorrect.Count -1)];
+                }
+                tts.Speak(response);
+            }
+            else
+            {
+                //play sound wav this.responseSoundIncorrect
+                if(playerIncorrect != null)
+                {
+                    playerIncorrect.Play();
+                }
+            }
+            //hide the textBoxWordEntry, revealing the word, and display next button
+            adjustControlsForIncorrect(true);
+//disabled until we are pulling the list from the datalayer rather than test data above, will cause foreign key violation otherwise
+            //data.setResponseResult(labelFlashCardWord.Text, false);
+        }
+
+        private void adjustControlsForIncorrect(bool showButton)
+        {
+            buttonNextWord.Visible = showButton;
+            buttonNextWord.Enabled = showButton;
+            textBoxWordEntry.Visible = !showButton;
+            textBoxWordEntry.Enabled = !showButton;
+            if(showButton)
+            {
+                buttonNextWord.Focus();
+            }
+        }
+        private void nextCard()
+        {
+            textBoxWordEntry.Text = string.Empty;
+            //change the value of labelFlashCardWord.Text
+            int index = words.LastIndexOf(labelFlashCardWord.Text);
+            if (index >= 0 && index < words.Count - 1)
+            {
+                labelFlashCardWord.Text = words[index + 1];
+            }
+            else if(index == words.Count-1)
+            {//last word... hooray, succes!
+                
+            }
+            else
+            {//initial word
+                labelFlashCardWord.Text = words[0];
+            }
+            textBoxWordEntry.Focus();
+        }
+
+        private void buttonNextWord_Click(object sender, EventArgs e)
+        {
+            string lastWord = labelFlashCardWord.Text;
+            adjustControlsForIncorrect(false);
+            //nextCard needs to be called before adding the word to the end as
+            //it uses the last index of the word in the list to find next word
+            nextCard();
+            //add the word to the end of the list to try again at the end
+            words.Add(lastWord); 
+        }
+
+
     }
 }
