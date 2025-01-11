@@ -73,7 +73,8 @@ namespace FlashCards4Spelling
 
         public void Speak(string prompt)
         {
-            this.synth.Speak(prompt);
+            //this.synth.Speak(prompt);
+            this.synth.SpeakAsync(prompt);
         }
 
         private string cleanVoiceName(string voice)
@@ -81,6 +82,10 @@ namespace FlashCards4Spelling
             return voice.Replace("Microsoft ", string.Empty).Replace(" Desktop", string.Empty);
         }
 
+        internal void Dispose()
+        {
+            this.synth.Dispose();
+        }
         
     }
 }
