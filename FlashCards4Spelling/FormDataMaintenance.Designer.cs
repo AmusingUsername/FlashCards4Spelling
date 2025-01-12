@@ -36,8 +36,9 @@
             this.textBoxWordCategory = new System.Windows.Forms.TextBox();
             this.labelWordCategory = new System.Windows.Forms.Label();
             this.groupBoxWordResults = new System.Windows.Forms.GroupBox();
+            this.listBoxResults = new System.Windows.Forms.ListBox();
             this.labelWordResultsCorrectValue = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.labelWordResultsCorrectPercent = new System.Windows.Forms.Label();
             this.labelWordResultsAttemptsValue = new System.Windows.Forms.Label();
             this.labelWordResultsCorrect = new System.Windows.Forms.Label();
             this.labelWordResultsAttempts = new System.Windows.Forms.Label();
@@ -55,11 +56,14 @@
             this.listBoxWords.Name = "listBoxWords";
             this.listBoxWords.Size = new System.Drawing.Size(242, 660);
             this.listBoxWords.TabIndex = 0;
+            this.listBoxWords.SelectedValueChanged += new System.EventHandler(this.listBoxWords_SelectedValueChanged);
             this.listBoxWords.ControlAdded += new System.Windows.Forms.ControlEventHandler(this.listBoxWords_ControlAdded);
             // 
             // textBoxNewWord
             // 
+            this.textBoxNewWord.AcceptsReturn = true;
             this.textBoxNewWord.Location = new System.Drawing.Point(12, 12);
+            this.textBoxNewWord.Multiline = true;
             this.textBoxNewWord.Name = "textBoxNewWord";
             this.textBoxNewWord.Size = new System.Drawing.Size(183, 22);
             this.textBoxNewWord.TabIndex = 1;
@@ -119,17 +123,27 @@
             // 
             // groupBoxWordResults
             // 
+            this.groupBoxWordResults.Controls.Add(this.listBoxResults);
             this.groupBoxWordResults.Controls.Add(this.labelWordResultsCorrectValue);
-            this.groupBoxWordResults.Controls.Add(this.label2);
+            this.groupBoxWordResults.Controls.Add(this.labelWordResultsCorrectPercent);
             this.groupBoxWordResults.Controls.Add(this.labelWordResultsAttemptsValue);
             this.groupBoxWordResults.Controls.Add(this.labelWordResultsCorrect);
             this.groupBoxWordResults.Controls.Add(this.labelWordResultsAttempts);
             this.groupBoxWordResults.Controls.Add(this.checkBoxWordResultMastered);
             this.groupBoxWordResults.Location = new System.Drawing.Point(268, 175);
             this.groupBoxWordResults.Name = "groupBoxWordResults";
-            this.groupBoxWordResults.Size = new System.Drawing.Size(259, 102);
+            this.groupBoxWordResults.Size = new System.Drawing.Size(259, 534);
             this.groupBoxWordResults.TabIndex = 4;
             this.groupBoxWordResults.TabStop = false;
+            // 
+            // listBoxResults
+            // 
+            this.listBoxResults.FormattingEnabled = true;
+            this.listBoxResults.ItemHeight = 16;
+            this.listBoxResults.Location = new System.Drawing.Point(7, 100);
+            this.listBoxResults.Name = "listBoxResults";
+            this.listBoxResults.Size = new System.Drawing.Size(241, 420);
+            this.listBoxResults.TabIndex = 6;
             // 
             // labelWordResultsCorrectValue
             // 
@@ -140,14 +154,14 @@
             this.labelWordResultsCorrectValue.Text = "0";
             this.labelWordResultsCorrectValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // label2
+            // labelWordResultsCorrectPercent
             // 
-            this.label2.Location = new System.Drawing.Point(148, 42);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(44, 23);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "0%";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelWordResultsCorrectPercent.Location = new System.Drawing.Point(148, 42);
+            this.labelWordResultsCorrectPercent.Name = "labelWordResultsCorrectPercent";
+            this.labelWordResultsCorrectPercent.Size = new System.Drawing.Size(44, 23);
+            this.labelWordResultsCorrectPercent.TabIndex = 4;
+            this.labelWordResultsCorrectPercent.Text = "0%";
+            this.labelWordResultsCorrectPercent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // labelWordResultsAttemptsValue
             // 
@@ -207,6 +221,7 @@
             this.Controls.Add(this.listBoxWords);
             this.Name = "FormDataMaintenance";
             this.Text = "FormDataMaintenance";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormDataMaintenance_FormClosing);
             this.groupBoxWordProperties.ResumeLayout(false);
             this.groupBoxWordProperties.PerformLayout();
             this.groupBoxWordResults.ResumeLayout(false);
@@ -229,8 +244,9 @@
         private System.Windows.Forms.Label labelWordResultsAttempts;
         private System.Windows.Forms.CheckBox checkBoxWordResultMastered;
         private System.Windows.Forms.Label labelWordResultsCorrectValue;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelWordResultsCorrectPercent;
         private System.Windows.Forms.Label labelWordResultsAttemptsValue;
         private System.Windows.Forms.Button buttonWordEdit;
+        private System.Windows.Forms.ListBox listBoxResults;
     }
 }

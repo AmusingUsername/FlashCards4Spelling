@@ -16,6 +16,7 @@ namespace FlashCards4Spelling
         private string ui_add = "Add";
         private DataLayer data;
         private List<string> wordList;
+        private string selectedWord {  get { return listBoxWords.SelectedValue.ToString().Trim() } }
 
         public FormDataMaintenance()
         {
@@ -35,6 +36,7 @@ namespace FlashCards4Spelling
         {
             wordList = new List<string>();
             this.data.DataLayerChanged += refreshWordsList;
+            refreshWordsList();
         }
 
         private void checkBoxWordActive_CheckedChanged(object sender, EventArgs e)
@@ -47,7 +49,7 @@ namespace FlashCards4Spelling
             {
                 ((CheckBox)sender).ForeColor = System.Drawing.Color.Red;
             }
-            
+            data.updateWordActive(selectedWord, checkBoxWordActive.Checked);
         }
 
         private void buttonWordEdit_Click(object sender, EventArgs e)
@@ -117,6 +119,29 @@ namespace FlashCards4Spelling
             if (word != "")
             {
                 listBoxWords.SelectedIndex = listBoxWords.FindStringExact(word);
+            }
+        }
+
+        private void FormDataMaintenance_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            data.exportData();
+        }
+
+        private void listBoxWords_SelectedValueChanged(object sender, EventArgs e)
+        {
+            string selection = selectedWord;
+            if(selection != "")
+            {
+                textBoxWordCategory.Text = data.getWordCategory(selection);
+                checkBoxWordResultMastered.Checked = data.getWordMastered(selection);
+                checkBoxWordActive.Checked = data.getWordActive(selection);
+                int countCorrect = data.getResultsCorrect(selection);
+                labelWordResultsCorrectValue.Text = countCorrect.ToString();
+                int countAttempts = data.getResultsAttempts(selection);
+                labelWordResultsAttemptsValue.Text = countAttempts.ToString();
+                labelWordResultsCorrectPercent.Text = (countCorrect / countAttempts) + "%";
+                listBoxResults.DataSource = data.getResultsList(selection);
+                listBoxResults.Refresh();
             }
         }
     }

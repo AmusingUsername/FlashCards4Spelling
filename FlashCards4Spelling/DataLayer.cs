@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +22,8 @@ namespace FlashCards4Spelling
         private const string col_words_mastered = "mastered";
         private const string col_results_time = "timestamp";
         private const string col_results_correct = "correct";
+        private const string filePathWords = "words.xml";
+        private const string filePathResults = "results.xml";
 
         public DataLayer()
         { 
@@ -59,6 +63,50 @@ namespace FlashCards4Spelling
             ds.Relations.Add(new DataRelation(tbl_words + "_" + tbl_results
                 , ds.Tables[tbl_words].Columns[col_words_word]
                 , ds.Tables[tbl_results].Columns[col_words_word]));
+
+            loadData();
+        }
+
+        private void loadData()
+        {
+            loadDataTableWords();
+            loadDataTableResults();
+        }
+
+        private void loadDataTableWords()
+        {
+            if (File.Exists(filePathWords))
+            {
+                ds.Tables[tbl_words].ReadXml(filePathWords);
+            }
+        }
+
+        private void loadDataTableResults()
+        {
+            if (File.Exists(filePathResults))
+            {
+                ds.Tables[tbl_results].ReadXml(filePathResults);
+            }
+        }
+
+        internal void exportData()
+        {
+            exportDataTableWords();
+            exportDataTableResults();
+        }
+
+        private void exportDataTableWords()
+        {
+            DataView dv = new DataView(ds.Tables[tbl_words]);
+            dv.Sort = col_words_word + " ASC";
+            dv.ToTable(tbl_words).WriteXml(filePathWords);
+        }
+
+        private void exportDataTableResults()
+        {
+            DataView dv = new DataView(ds.Tables[tbl_results]);
+            dv.Sort = col_words_word + " ASC, " + col_results_time + " DESC";
+            dv.ToTable(tbl_results).WriteXml(filePathResults);
         }
 
         public void addWord(string word, string category = "")
@@ -132,6 +180,56 @@ namespace FlashCards4Spelling
             return words.ToArray();
         }
 
+        public string getWordCategory(string word)
+        {
+            string category = string.Empty;
+            DataRow dr = getWordDataRow();
+            category = dr.Field<string>(col_words_category);
+            return category;
+        }
+
+        public bool getWordMastered(string word)
+        {
+            bool mastered = false;
+            DataRow dr = getWordDataRow();
+            mastered = dr.Field<bool>(col_words_mastered);
+            return mastered;
+        }
+
+        public bool getWordActive(string word)
+        {
+            bool active = true;
+            DataRow dr = getWordDataRow();
+            active = dr.Field<bool>(col_words_active);
+            return active;
+        }
+
+        private DataRow getWordDataRow()
+        {
+            DataRow dr = null;
+            string filter = col_words_word + " = " + word;
+            DataRow[] drs = ds.Tables[tbl_words].Select(filter);
+            if (drs.Length > 0)
+            {
+                dr = drs[0];
+            }
+            return dr;
+        }
+
+        public List<string> getResultsList(string word)
+        {
+            List<string> results = new List<string>();
+            string filter = col_words_word + " = " + word;
+            DataRow[] drs = ds.Tables[tbl_words].Select(filter);
+            foreach (DataRow dr in drs)
+            {
+                string time = dr.Field<DateTime>(col_results_time).ToString("yyyy/MM/dd");
+                string correct = (dr.Field<bool>(col_results_correct) ? "Correct" : "Incorrect");
+                results.Add(time + "   " + correct);
+            }
+            return results;
+        }
+
         /// <summary>
         /// returns the number of completed attempts for given word
         /// </summary>
@@ -191,7 +289,7 @@ namespace FlashCards4Spelling
             return result;
         }
 
-        internal void setResponseResult(string word, bool responseWasCorrect)
+        internal void setAttemptResult(string word, bool responseWasCorrect)
         {
             DataRow dr = ds.Tables[tbl_results].NewRow();
             dr[col_words_word] = word;
