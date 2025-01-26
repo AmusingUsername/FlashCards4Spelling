@@ -21,12 +21,14 @@ namespace FlashCards4Spelling
     {
         TTSInterface tts;
         DataLayer data;
-        List<string> words = (new string[] { "forgot", "Constantinople", "malcontent", "espresso", "tollgate" }).ToList<string>();
+        List<string> words;
+        List<string> wordsMissed = new List<string>();
         List<string> responsesCorrect;
         List<string> responsesIncorrect;
         SoundPlayer playerCorrect;
         SoundPlayer playerIncorrect;
-        bool lastResponseCorrect = true;
+        int firstTryCorrect = 0;
+        bool firstTry = true;
 
         //Settings which can be overridden with config file setting
         //---------------------------------------------------------
@@ -252,6 +254,7 @@ namespace FlashCards4Spelling
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             configsSave();
+            data.saveResults();
             if (tts != null)
             {
                 tts.Dispose();
@@ -318,7 +321,6 @@ namespace FlashCards4Spelling
 
         private void handleCorrect()
         {
-            lastResponseCorrect = true;
             if (respondToCorrectWithSpeech)
             {
                 string response = defaultResponseCorrect;
@@ -337,14 +339,16 @@ namespace FlashCards4Spelling
                 }
             }
 
-//disabled until we are pulling the list from the datalayer rather than test data above, will cause foreign key violation otherwise
-            //data.setResponseResult(labelFlashCardWord.Text, true);
+            if (firstTry)
+            {
+                firstTryCorrect++;
+            }
+            data.setAttemptResult(labelFlashCardWord.Text.Trim(), true);
             nextCard();
         }
 
         private void handleIncorrect()
         {
-            lastResponseCorrect = false;
             if (respondToIncorrectWithSpeech)
             {
                 string response = defaultResponseIncorrect;
@@ -365,8 +369,8 @@ namespace FlashCards4Spelling
             }
             //hide the textBoxWordEntry, revealing the word, and display next button
             adjustControlsForIncorrect(true);
-            //disabled until we are pulling the list from the datalayer rather than test data above, will cause foreign key violation otherwise
-            //data.setResponseResult(labelFlashCardWord.Text, false);
+            data.setAttemptResult(labelFlashCardWord.Text.Trim(), false);
+            wordsMissed.Add(labelFlashCardWord.Text.Trim());
         }
 
         private void adjustControlsForIncorrect(bool showButton)
@@ -382,31 +386,39 @@ namespace FlashCards4Spelling
         }
         private void nextCard()
         {
-            textBoxWordEntry.Text = string.Empty;
+            textBoxWordEntry.Text = string.Empty; //clear the text of the field to enter the attempt
 
-            if (!lastResponseCorrect)
-            {//add the word to the end of the list to try again at the end
-                words.Add(labelFlashCardWord.Text.Trim());
-            }
-
-            //change the value of labelFlashCardWord.Text if not last word
-            int lastIndex = words.LastIndexOf(labelFlashCardWord.Text.Trim());
-            if (lastIndex >= 0 && lastIndex < words.Count - 1) //between first item in list and item before the last OR
+            if(words == null) //if we haven't gotten the word list, get it
             {
-                labelFlashCardWord.Text = words[lastIndex + 1];
+                words = data.getWordsList(requiredWordAttempts);
             }
-            else if(lastIndex == words.Count-1 && lastResponseCorrect) //if the last item and correct
-            {//hooray, succes!
-                finishedFlashCards();
+
+            //change the value of [word to attempt] if not last word
+            int index = words.IndexOf(labelFlashCardWord.Text.Trim());
+            if (index >= 0 && index < words.Count - 1) //between first item in list and item before the last
+            {
+                labelFlashCardWord.Text = words[index + 1];
             }
-            else if (lastIndex == words.Count - 1 && !lastResponseCorrect) //last item, but misspelled the word
-            { 
-                labelFlashCardWord.Text += " ";
+            else if(index == words.Count - 1) //if the last word in word list
+            {
+                if(wordsMissed.Count > 0) //we missed some, will have to try the missed words again
+                {
+                    labelFlashCardWord.Text += " ";
+                    words = wordsMissed; //the wordlist becomes the missed words
+                    wordsMissed.Clear(); //clear the missed words list
+                    firstTry = false;
+                }
+                else
+                {//hooray, succes!
+                    finishedFlashCards();
+                }
+                
             }
-            else //before the first word in list, lastIndex will be negative
+            else //before the first word in list, index will be negative
             {
                 labelFlashCardWord.Text = words[0];
             }
+
             textBoxWordEntry.Focus();
         }
 
@@ -427,15 +439,6 @@ namespace FlashCards4Spelling
             labelFlashCardWord.BackColor = Color.Green;
             textBoxWordEntry.Visible = false;
             textBoxWordEntry.Enabled = false;
-
-            int firstTryCorrect = 0;
-            foreach (string word in words)
-            {
-                if (words.IndexOf(word) == words.LastIndexOf(word))
-                {
-                    firstTryCorrect++;
-                }
-            }
 
             tts.Speak(String.Format(defaultResponseFinishedResults, firstTryCorrect.ToString()));
         }

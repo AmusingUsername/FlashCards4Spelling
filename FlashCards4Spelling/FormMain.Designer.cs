@@ -171,7 +171,7 @@
             this.labelFlashCardWord.Name = "labelFlashCardWord";
             this.labelFlashCardWord.Size = new System.Drawing.Size(778, 87);
             this.labelFlashCardWord.TabIndex = 2;
-            this.labelFlashCardWord.Text = "Crikey";
+            this.labelFlashCardWord.Text = "crivens";
             this.labelFlashCardWord.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.labelFlashCardWord.TextChanged += new System.EventHandler(this.labelFlashCardWord_TextChanged);
             // 

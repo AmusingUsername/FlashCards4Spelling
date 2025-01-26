@@ -16,7 +16,7 @@ namespace FlashCards4Spelling
         private string ui_add = "Add";
         private DataLayer data;
         private List<string> wordList;
-        private string selectedWord {  get { return listBoxWords.SelectedValue.ToString().Trim() } }
+        private string selectedWord {  get { return listBoxWords.SelectedValue.ToString().Trim(); } }
 
         public FormDataMaintenance()
         {
@@ -139,7 +139,14 @@ namespace FlashCards4Spelling
                 labelWordResultsCorrectValue.Text = countCorrect.ToString();
                 int countAttempts = data.getResultsAttempts(selection);
                 labelWordResultsAttemptsValue.Text = countAttempts.ToString();
-                labelWordResultsCorrectPercent.Text = (countCorrect / countAttempts) + "%";
+                if (countAttempts > 0)
+                {
+                    labelWordResultsCorrectPercent.Text = 100 * (countCorrect / countAttempts) + "%";
+                }
+                else
+                {
+                    labelWordResultsCorrectPercent.Text = "0%";
+                }
                 listBoxResults.DataSource = data.getResultsList(selection);
                 listBoxResults.Refresh();
             }

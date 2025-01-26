@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
+using System.Diagnostics;
 
 namespace FlashCards4Spelling
 {
@@ -92,7 +93,6 @@ namespace FlashCards4Spelling
         internal void exportData()
         {
             exportDataTableWords();
-            exportDataTableResults();
         }
 
         private void exportDataTableWords()
@@ -109,38 +109,43 @@ namespace FlashCards4Spelling
             dv.ToTable(tbl_results).WriteXml(filePathResults);
         }
 
-        public void addWord(string word, string category = "")
+        internal void saveResults()
+        {
+            exportDataTableResults();
+        }
+
+        internal void addWord(string word, string category = "")
         {
             //insert
             DataRow dr = ds.Tables[tbl_words].NewRow();
-            dr[col_words_word ] = word;
+            dr[col_words_word ] = word.Trim();
             dr[col_words_category ] = category;
             //active and mastered are set by default values
             ds.Tables[tbl_words].Rows.Add(dr);
-            DataLayerChanged?.Invoke(word);
+            DataLayerChanged?.Invoke(word.Trim());
         }
 
-        public void updateWordSpelling(string word, string wordNewSpelling)
+        internal void updateWordSpelling(string word, string wordNewSpelling)
         {
             //check for word existing, update spelling or delete/insert new word
             throw new NotImplementedException();
         }
 
-        public void updateWordCategory(string word, string category)
+        internal void updateWordCategory(string word, string category)
         {
             throw new NotImplementedException();
         }
-        public void updateWordMastered(string word, bool isMastered = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void updateWordActive(string word, bool isActive)
+        internal void updateWordMastered(string word, bool isMastered = true)
         {
             throw new NotImplementedException();
         }
 
-        public void deleteWord(string word)
+        internal void updateWordActive(string word, bool isActive)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void deleteWord(string word)
         {
             throw new NotImplementedException();
         }
@@ -149,7 +154,7 @@ namespace FlashCards4Spelling
         /// Returns all words, regardless of whether active or mastered
         /// </summary>
         /// <returns>string[]</returns>
-        public string[] getWordsAll()
+        internal string[] getWordsAll()
         {
             string filter = string.Empty;
             return select(filter);
@@ -162,7 +167,7 @@ namespace FlashCards4Spelling
         /// <param name="isMastered">true if word is mastered, false if not (default false)</param>
         /// <param name="isActive">true if word is active, false if not (default true)</param>
         /// <returns>string[]</returns>
-        public string[] getWordsByCategory(string category, bool isMastered = false, bool isActive = true)
+        private string[] getWordsByCategory(string category, bool isMastered = false, bool isActive = true)
         {
             string filter = col_words_active + " = " + isActive.ToString();
             filter += " AND " + col_words_mastered + " = " + isMastered.ToString();
@@ -180,34 +185,34 @@ namespace FlashCards4Spelling
             return words.ToArray();
         }
 
-        public string getWordCategory(string word)
+        internal string getWordCategory(string word)
         {
             string category = string.Empty;
-            DataRow dr = getWordDataRow();
+            DataRow dr = getWordDataRow(word);
             category = dr.Field<string>(col_words_category);
             return category;
         }
 
-        public bool getWordMastered(string word)
+        internal bool getWordMastered(string word)
         {
             bool mastered = false;
-            DataRow dr = getWordDataRow();
+            DataRow dr = getWordDataRow(word);
             mastered = dr.Field<bool>(col_words_mastered);
             return mastered;
         }
 
-        public bool getWordActive(string word)
+        internal bool getWordActive(string word)
         {
             bool active = true;
-            DataRow dr = getWordDataRow();
+            DataRow dr = getWordDataRow(word);
             active = dr.Field<bool>(col_words_active);
             return active;
         }
 
-        private DataRow getWordDataRow()
+        private DataRow getWordDataRow(string word)
         {
             DataRow dr = null;
-            string filter = col_words_word + " = " + word;
+            string filter = col_words_word + " = '" + word + "'";
             DataRow[] drs = ds.Tables[tbl_words].Select(filter);
             if (drs.Length > 0)
             {
@@ -216,11 +221,11 @@ namespace FlashCards4Spelling
             return dr;
         }
 
-        public List<string> getResultsList(string word)
+        internal List<string> getResultsList(string word)
         {
             List<string> results = new List<string>();
-            string filter = col_words_word + " = " + word;
-            DataRow[] drs = ds.Tables[tbl_words].Select(filter);
+            string filter = col_words_word + " = '" + word + "'";
+            DataRow[] drs = ds.Tables[tbl_results].Select(filter);
             foreach (DataRow dr in drs)
             {
                 string time = dr.Field<DateTime>(col_results_time).ToString("yyyy/MM/dd");
@@ -235,7 +240,7 @@ namespace FlashCards4Spelling
         /// </summary>
         /// <param name="word">word for which to retrieve results</param>
         /// <returns>int</returns>
-        public int getResultsAttempts(string word)
+        internal int getResultsAttempts(string word)
         {
             int attempts = 0;
             attempts = getResults(word, DateTime.MinValue, DateTime.MaxValue);
@@ -247,31 +252,31 @@ namespace FlashCards4Spelling
         /// </summary>
         /// <param name="word">word for which to retrieve results</param>
         /// <returns>int</returns>
-        public int getResultsCorrect(string word)
+        internal int getResultsCorrect(string word)
         {
             int correct = getResults(word, DateTime.MinValue, DateTime.MaxValue, true);
             return correct;
         }
 
-        public int getResultsAttemptsRange(string word, DateTime start, DateTime end)
+        internal int getResultsAttemptsRange(string word, DateTime start, DateTime end)
         {
             int attempts = getResults(word, start, end, true);
             return attempts;
         }
 
-        public int getResultsAttemptsSince(string word, DateTime start)
+        internal int getResultsAttemptsSince(string word, DateTime start)
         {
             int attempts = getResults(word, start, DateTime.MaxValue);
             return attempts;
         }
 
-        public int getResultsCorrectRange(string word, DateTime start, DateTime end)
+        internal int getResultsCorrectRange(string word, DateTime start, DateTime end)
         {
             int correct = getResults(word, start, end, true);
             return correct;
         }
 
-        public int getResultsCorrectSince(string word, DateTime start)
+        internal int getResultsCorrectSince(string word, DateTime start)
         {
             int correct = getResults(word, start, DateTime.MaxValue, true);
             return correct;
@@ -280,7 +285,7 @@ namespace FlashCards4Spelling
         private int getResults(string word, DateTime start, DateTime end, bool onlyCorrect = false)
         {
             int result = -1;
-            string filter = col_words_word + " = " + word;
+            string filter = col_words_word + " = '" + word + "'";
             if (onlyCorrect) { filter += " AND " + col_results_correct + " = " + true.ToString(); }
             if (start > DateTime.MinValue) { filter += " AND " + col_results_time + " > " + start; }
             if (end < DateTime.MaxValue) { filter += " AND " + col_results_time + " < " + end; }
@@ -295,7 +300,34 @@ namespace FlashCards4Spelling
             dr[col_words_word] = word;
             dr[col_results_correct] = responseWasCorrect;
             dr[col_results_time] = DateTime.UtcNow;
-            ds.Tables[tbl_results].Rows.Add(dr);
+            try
+            {
+                ds.Tables[tbl_results].Rows.Add(dr);
+            }
+            catch(Exception ex) 
+            {
+                //Debugger.Break();
+                Console.WriteLine(ex.ToString());
+            }
+            
+        }
+
+        internal List<string> getWordsList(int count)
+        {
+            List<string> words = new List<string>();
+            if (count > 0)
+            {
+                List<string> tempWords = getWordsByCategory("").ToList<string>();
+                if(count > tempWords.Count) { count = tempWords.Count; }
+                for (int i = 0; i < count; i++)
+                {
+                    int tempIndex = new Random().Next(0, tempWords.Count);
+                    string tempWord = tempWords[tempIndex];
+                    tempWords.RemoveAt(tempIndex);
+                    words.Add(tempWord);
+                }
+            }
+            return words;
         }
 
         public delegate void DataLayerChangedHandler(string word);

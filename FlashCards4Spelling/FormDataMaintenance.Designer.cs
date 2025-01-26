@@ -220,7 +220,7 @@
             this.Controls.Add(this.textBoxNewWord);
             this.Controls.Add(this.listBoxWords);
             this.Name = "FormDataMaintenance";
-            this.Text = "FormDataMaintenance";
+            this.Text = "Data Maintenance";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormDataMaintenance_FormClosing);
             this.groupBoxWordProperties.ResumeLayout(false);
             this.groupBoxWordProperties.PerformLayout();
